@@ -538,9 +538,9 @@ export default function CopingApp() {
   }, [clearAll]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-stone-50 to-stone-100">
+    <div className="calm-bg">
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/70 border-b border-stone-200/60">
+      <header className="sticky top-0 z-50 header-calm">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -631,7 +631,7 @@ export default function CopingApp() {
                     const tier = TIER_CONFIG[skill.tier];
                     return (
                       <motion.div key={skill.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}>
-                        <Card className="cursor-pointer hover:shadow-md transition-shadow border-stone-200" onClick={() => handleSkillSelect(skill)}>
+                        <Card className="card-calm cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleSkillSelect(skill)}>
                           <CardContent className="flex items-start gap-4 p-4">
                             <div className={`w-10 h-10 rounded-lg ${tier.bgColor} flex items-center justify-center shrink-0`}>{tier.icon}</div>
                             <div className="flex-1 min-w-0">
@@ -669,7 +669,7 @@ export default function CopingApp() {
                 </div>
                 <Badge variant="outline" className="text-xs"><Clock className="w-3 h-3 mr-1" /> {selectedSkill.duration}</Badge>
               </div>
-              <Card className="border-stone-200">
+              <Card className="card-calm">
                 <CardContent className="p-6">
                   <p className="text-sm text-muted-foreground mb-6">{selectedSkill.description}</p>
                   <Separator className="mb-6" />
@@ -762,7 +762,7 @@ export default function CopingApp() {
               </div>
 
               {insights.totalSessions === 0 ? (
-                <Card className="border-stone-200">
+                <Card className="card-calm">
                   <CardContent className="flex flex-col items-center py-16 text-center">
                     <div className="w-16 h-16 rounded-full bg-stone-100 flex items-center justify-center mb-4"><BarChart3 className="w-8 h-8 text-stone-400" /></div>
                     <h3 className="font-semibold text-stone-700 mb-2">No data yet</h3>
@@ -773,9 +773,9 @@ export default function CopingApp() {
               ) : (
                 <>
                   <div className="grid grid-cols-3 gap-3">
-                    <Card className="border-stone-200"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-stone-800">{insights.totalSessions}</p><p className="text-xs text-muted-foreground">Sessions</p></CardContent></Card>
-                    <Card className="border-stone-200"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-stone-800">{insights.topSkills.length}</p><p className="text-xs text-muted-foreground">Skills tried</p></CardContent></Card>
-                    <Card className="border-stone-200"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-stone-800">{Object.keys(insights.moodCounts).length}</p><p className="text-xs text-muted-foreground">Moods tracked</p></CardContent></Card>
+                    <Card className="stat-card-calm"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-stone-800">{insights.totalSessions}</p><p className="text-xs text-muted-foreground">Sessions</p></CardContent></Card>
+                    <Card className="stat-card-calm"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-stone-800">{insights.topSkills.length}</p><p className="text-xs text-muted-foreground">Skills tried</p></CardContent></Card>
+                    <Card className="stat-card-calm"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-stone-800">{Object.keys(insights.moodCounts).length}</p><p className="text-xs text-muted-foreground">Moods tracked</p></CardContent></Card>
                   </div>
 
                   <Tabs defaultValue="top-skills" className="w-full">
@@ -791,7 +791,7 @@ export default function CopingApp() {
                         const tier = TIER_CONFIG[skill.tier];
                         return (
                           <motion.div key={skill.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                            <Card className="border-stone-200">
+                            <Card className="card-calm">
                               <CardContent className="flex items-center gap-3 p-3">
                                 <span className="text-lg font-bold text-stone-300 w-6">#{i + 1}</span>
                                 <div className={`w-8 h-8 rounded-lg ${tier.bgColor} flex items-center justify-center shrink-0`}>{tier.icon}</div>
@@ -816,7 +816,7 @@ export default function CopingApp() {
                         const moodInfo = MOODS.find((m) => m.id === mood);
                         const tier = TIER_CONFIG[data.tier];
                         return (
-                          <Card key={mood} className="border-stone-200">
+                          <Card key={mood} className="card-calm">
                             <CardContent className="flex items-center gap-3 p-3">
                               <span className="text-xl">{moodInfo?.emoji}</span>
                               <div className="flex-1">
@@ -837,7 +837,7 @@ export default function CopingApp() {
                       <p className="text-xs text-muted-foreground mb-2">Recent sessions</p>
                       <ScrollArea className="h-[400px]">
                         {insights.recentSessions.map((session) => (
-                          <Card key={session.id} className="border-stone-200 mb-2">
+                          <Card key={session.id} className="card-calm mb-2">
                             <CardContent className="p-3">
                               <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-2">
@@ -869,7 +869,7 @@ export default function CopingApp() {
 
               {/* ─── Data Management Section ──────────────── */}
               {insights.totalSessions > 0 && (
-                <Card className="border-stone-200 mt-6">
+                <Card className="card-calm mt-6">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <FileText className="w-4 h-4 text-stone-500" /> Data Management
@@ -936,7 +936,7 @@ export default function CopingApp() {
         </AnimatePresence>
       </main>
 
-      <footer className="mt-auto py-4 text-center">
+      <footer className="mt-auto py-4 text-center relative z-10">
         <p className="text-xs text-stone-400">Based on the Coping Skills Menu — 25 skills across 5 tiers</p>
       </footer>
     </div>
