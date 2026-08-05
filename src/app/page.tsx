@@ -30,22 +30,50 @@ import {
   Trash2,
   FileText,
   AlertCircle,
+  Moon,
 } from "lucide-react";
 import { SKILLS, type Skill } from "@/lib/skills-data";
 import { useCopingStore } from "@/lib/store";
+
+// ─── Dark Mode Hook ──────────────────────────────────────────────────
+function useDarkMode() {
+  const [dark, setDark] = useState(false);
+  useState(() => {
+    if (typeof window === "undefined") return;
+    const saved = localStorage.getItem("calm-router-dark");
+    if (saved === "true") {
+      setDark(true);
+      document.documentElement.classList.add("dark");
+    } else if (saved === null && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      setDark(true);
+      document.documentElement.classList.add("dark");
+    }
+  });
+  const toggle = useCallback(() => {
+    setDark((prev) => {
+      const next = !prev;
+      if (typeof window !== "undefined") {
+        document.documentElement.classList.toggle("dark", next);
+        localStorage.setItem("calm-router-dark", String(next));
+      }
+      return next;
+    });
+  }, []);
+  return [dark, toggle] as const;
+}
 
 // ─── Types ───────────────────────────────────────────────────────────────
 type View = "checkin" | "recommendations" | "skill-detail" | "breathing" | "grounding" | "rating" | "insights" | "confirm-clear";
 type TierId = "EMERGENCY_RESET" | "QUICK_STARTERS" | "MAIN_REGULATION" | "COMFORT_PICKS" | "DAILY_MAINTENANCE";
 
 // ─── Constants — 5 tiers from the Coping Skills Menu ──────────────────────
-const TIER_ENTRIES: { id: TierId; label: string; icon: React.ReactNode; color: string; borderColor: string; desc: string; guide: string }[] = [
+const TIER_ENTRIES: { id: TierId; label: string; icon: React.ReactNode; color: string; darkColor: string; desc: string; guide: string }[] = [
   {
     id: "EMERGENCY_RESET",
     label: "Emergency Reset",
     icon: <AlertTriangle className="w-6 h-6" />,
     color: "bg-red-50 border-red-300 hover:bg-red-100 text-red-800",
-    borderColor: "border-red-200",
+    darkColor: "bg-red-950/40 border-red-800/50 hover:bg-red-900/40 text-red-300",
     desc: "I'm in crisis, panicking, or completely overwhelmed",
     guide: "Use when you're in acute distress. These skills activate your body's calming reflexes fast.",
   },
@@ -54,7 +82,7 @@ const TIER_ENTRIES: { id: TierId; label: string; icon: React.ReactNode; color: s
     label: "Quick Starters",
     icon: <Zap className="w-6 h-6" />,
     color: "bg-amber-50 border-amber-300 hover:bg-amber-100 text-amber-800",
-    borderColor: "border-amber-200",
+    darkColor: "bg-amber-950/40 border-amber-800/50 hover:bg-amber-900/40 text-amber-300",
     desc: "I need fast relief right now",
     guide: "Low-effort tools you can do anywhere. Perfect when you need something quick but aren't in crisis.",
   },
@@ -63,7 +91,7 @@ const TIER_ENTRIES: { id: TierId; label: string; icon: React.ReactNode; color: s
     label: "Main Regulation",
     icon: <Brain className="w-6 h-6" />,
     color: "bg-violet-50 border-violet-300 hover:bg-violet-100 text-violet-800",
-    borderColor: "border-violet-200",
+    darkColor: "bg-violet-950/40 border-violet-800/50 hover:bg-violet-900/40 text-violet-300",
     desc: "I have energy to work through what's bothering me",
     guide: "Deeper coping tools for when you can engage. These take 10-20 minutes but have lasting effects.",
   },
@@ -72,7 +100,7 @@ const TIER_ENTRIES: { id: TierId; label: string; icon: React.ReactNode; color: s
     label: "Comfort Picks",
     icon: <Heart className="w-6 h-6" />,
     color: "bg-pink-50 border-pink-300 hover:bg-pink-100 text-pink-800",
-    borderColor: "border-pink-200",
+    darkColor: "bg-pink-950/40 border-pink-800/50 hover:bg-pink-900/40 text-pink-300",
     desc: "I'm tired and need something soothing",
     guide: "Gentle, nurturing activities for when you're emotionally drained. Focus on comfort and self-compassion.",
   },
@@ -81,18 +109,18 @@ const TIER_ENTRIES: { id: TierId; label: string; icon: React.ReactNode; color: s
     label: "Daily Maintenance",
     icon: <Sun className="w-6 h-6" />,
     color: "bg-emerald-50 border-emerald-300 hover:bg-emerald-100 text-emerald-800",
-    borderColor: "border-emerald-200",
+    darkColor: "bg-emerald-950/40 border-emerald-800/50 hover:bg-emerald-900/40 text-emerald-300",
     desc: "I'm doing okay and want to stay that way",
     guide: "Prevention and wellness habits. Build resilience over time by practicing these consistently.",
   },
 ];
 
-const TIER_CONFIG: Record<string, { label: string; icon: React.ReactNode; color: string; bgColor: string; borderColor: string }> = {
-  EMERGENCY_RESET: { label: "Emergency Reset", icon: <AlertTriangle className="w-4 h-4" />, color: "text-red-600", bgColor: "bg-red-50", borderColor: "border-red-200" },
-  QUICK_STARTERS: { label: "Quick Starters", icon: <Zap className="w-4 h-4" />, color: "text-amber-600", bgColor: "bg-amber-50", borderColor: "border-amber-200" },
-  MAIN_REGULATION: { label: "Main Regulation", icon: <Brain className="w-4 h-4" />, color: "text-violet-600", bgColor: "bg-violet-50", borderColor: "border-violet-200" },
-  COMFORT_PICKS: { label: "Comfort Picks", icon: <Heart className="w-4 h-4" />, color: "text-pink-600", bgColor: "bg-pink-50", borderColor: "border-pink-200" },
-  DAILY_MAINTENANCE: { label: "Daily Maintenance", icon: <Sun className="w-4 h-4" />, color: "text-emerald-600", bgColor: "bg-emerald-50", borderColor: "border-emerald-200" },
+const TIER_CONFIG: Record<string, { label: string; icon: React.ReactNode; color: string; darkColor: string; bgColor: string; darkBgColor: string }> = {
+  EMERGENCY_RESET: { label: "Emergency Reset", icon: <AlertTriangle className="w-4 h-4" />, color: "text-red-600", darkColor: "text-red-400", bgColor: "bg-red-50", darkBgColor: "bg-red-950/60" },
+  QUICK_STARTERS: { label: "Quick Starters", icon: <Zap className="w-4 h-4" />, color: "text-amber-600", darkColor: "text-amber-400", bgColor: "bg-amber-50", darkBgColor: "bg-amber-950/60" },
+  MAIN_REGULATION: { label: "Main Regulation", icon: <Brain className="w-4 h-4" />, color: "text-violet-600", darkColor: "text-violet-400", bgColor: "bg-violet-50", darkBgColor: "bg-violet-950/60" },
+  COMFORT_PICKS: { label: "Comfort Picks", icon: <Heart className="w-4 h-4" />, color: "text-pink-600", darkColor: "text-pink-400", bgColor: "bg-pink-50", darkBgColor: "bg-pink-950/60" },
+  DAILY_MAINTENANCE: { label: "Daily Maintenance", icon: <Sun className="w-4 h-4" />, color: "text-emerald-600", darkColor: "text-emerald-400", bgColor: "bg-emerald-50", darkBgColor: "bg-emerald-950/60" },
 };
 
 // ─── Breathing Exercise ────────────────────────────────────────────────────
@@ -265,6 +293,7 @@ export default function CopingApp() {
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [rating, setRating] = useState(0);
   const [recommended, setRecommended] = useState<Skill[]>([]);
+  const [isDark, toggleDark] = useDarkMode();
 
   const sessions = useCopingStore((s) => s.sessions);
   const addSession = useCopingStore((s) => s.addSession);
@@ -578,8 +607,11 @@ export default function CopingApp() {
             </div>
             <h1 className="font-semibold text-stone-800">Calm Router</h1>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setView("insights")} className="text-stone-500">
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" onClick={toggleDark} className="text-stone-500 dark:text-stone-400" title={isDark ? "Switch to light mode" : "Switch to dark mode"}>
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setView("insights")} className="text-stone-500 dark:text-stone-400">
               <History className="w-4 h-4" />
             </Button>
           </div>
@@ -620,7 +652,7 @@ export default function CopingApp() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.06 }}
                     onClick={() => handleCheckin(tier.id)}
-                    className={`relative w-full p-5 rounded-xl border-2 text-left transition-all duration-200 ${tier.color} group`}
+                    className={`relative w-full p-5 rounded-xl border-2 text-left transition-all duration-200 ${isDark ? tier.darkColor : tier.color} group`}
                   >
                     <div className="flex items-start gap-4">
                       <div className="shrink-0 mt-0.5">{tier.icon}</div>
@@ -651,11 +683,11 @@ export default function CopingApp() {
                 <Button variant="ghost" size="icon" onClick={() => setView("checkin")}>
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
-                <div className={`w-10 h-10 rounded-lg ${TIER_CONFIG[currentTier].bgColor} flex items-center justify-center`}>
+                <div className={`w-10 h-10 rounded-lg ${isDark ? TIER_CONFIG[currentTier].darkBgColor : TIER_CONFIG[currentTier].bgColor} flex items-center justify-center`}>
                   {TIER_CONFIG[currentTier].icon}
                 </div>
                 <div>
-                  <h2 className={`text-xl font-bold ${TIER_CONFIG[currentTier].color}`}>{TIER_CONFIG[currentTier].label}</h2>
+                  <h2 className={`text-xl font-bold ${isDark ? TIER_CONFIG[currentTier].darkColor : TIER_CONFIG[currentTier].color}`}>{TIER_CONFIG[currentTier].label}</h2>
                   <p className="text-xs text-muted-foreground">5 skills — pick any one</p>
                 </div>
               </div>
@@ -695,7 +727,7 @@ export default function CopingApp() {
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
-                          <div className={`w-10 h-10 rounded-lg ${TIER_CONFIG[currentTier].bgColor} flex items-center justify-center shrink-0 text-sm font-bold text-muted-foreground`}>
+                          <div className={`w-10 h-10 rounded-lg ${isDark ? TIER_CONFIG[currentTier].darkBgColor : TIER_CONFIG[currentTier].bgColor} flex items-center justify-center shrink-0 text-sm font-bold text-muted-foreground`}>
                             {si + 1}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -868,7 +900,7 @@ export default function CopingApp() {
                             <Card className="card-calm">
                               <CardContent className="flex items-center gap-3 p-3">
                                 <span className="text-lg font-bold text-stone-300 w-6">#{i + 1}</span>
-                                <div className={`w-8 h-8 rounded-lg ${tier.bgColor} flex items-center justify-center shrink-0`}>{tier.icon}</div>
+                                <div className={`w-8 h-8 rounded-lg ${tier.bgColor} dark:${tier.darkBgColor} flex items-center justify-center shrink-0`}>{tier.icon}</div>
                                 <div className="flex-1 min-w-0">
                                   <p className="text-sm font-medium text-stone-800 truncate">{skill.name}</p>
                                   <p className="text-xs text-muted-foreground">Used {skill.timesUsed}x</p>
@@ -891,7 +923,7 @@ export default function CopingApp() {
                         return (
                           <Card key={tier} className="card-calm">
                             <CardContent className="flex items-center gap-3 p-3">
-                              <div className={`w-8 h-8 rounded-lg ${tierConf?.bgColor || "bg-stone-50"} flex items-center justify-center shrink-0`}>
+                              <div className={`w-8 h-8 rounded-lg ${tierConf?.bgColor || "bg-stone-50"} dark:${tierConf?.darkBgColor || "dark:bg-stone-800"} flex items-center justify-center shrink-0`}>
                                 {tierConf?.icon || <Sparkles className="w-4 h-4" />}
                               </div>
                               <div className="flex-1">
@@ -916,7 +948,7 @@ export default function CopingApp() {
                             <CardContent className="p-3">
                               <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-2">
-                                  <div className={`w-6 h-6 rounded ${TIER_CONFIG[session.mood]?.bgColor || "bg-stone-100"} flex items-center justify-center`}>
+                                  <div className={`w-6 h-6 rounded ${TIER_CONFIG[session.mood]?.bgColor || "bg-stone-100"} dark:${TIER_CONFIG[session.mood]?.darkBgColor || "dark:bg-stone-800"} flex items-center justify-center`}>
                                     <span className="text-xs">{(TIER_CONFIG[session.mood]?.icon) || <Sparkles className="w-3 h-3" />}</span>
                                   </div>
                                   <span className="text-sm font-medium">{TIER_CONFIG[session.mood]?.label || session.mood}</span>

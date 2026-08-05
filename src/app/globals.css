@@ -137,6 +137,19 @@
   min-height: 100vh;
 }
 
+.dark .calm-bg {
+  background: linear-gradient(
+    160deg,
+    #0c1a12 0%,
+    #0a1a14 15%,
+    #0a1a1a 30%,
+    #140e24 50%,
+    #1a0e1e 65%,
+    #1a1408 80%,
+    #1a1808 100%
+  );
+}
+
 .calm-bg::before {
   content: "";
   position: fixed;
@@ -150,6 +163,16 @@
     radial-gradient(ellipse 70% 55% at 50% 80%, rgba(59, 130, 246, 0.08), transparent),
     radial-gradient(ellipse 50% 40% at 10% 70%, rgba(236, 72, 153, 0.06), transparent),
     radial-gradient(ellipse 40% 35% at 90% 60%, rgba(245, 158, 11, 0.06), transparent);
+}
+
+.dark .calm-bg::before {
+  opacity: 0.3;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(16, 185, 129, 0.2), transparent),
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(139, 92, 246, 0.15), transparent),
+    radial-gradient(ellipse 70% 55% at 50% 80%, rgba(59, 130, 246, 0.12), transparent),
+    radial-gradient(ellipse 50% 40% at 10% 70%, rgba(236, 72, 153, 0.1), transparent),
+    radial-gradient(ellipse 40% 35% at 90% 60%, rgba(245, 158, 11, 0.08), transparent);
 }
 
 .calm-bg::after {
@@ -178,6 +201,11 @@
   border-bottom: 1px solid rgba(209, 213, 219, 0.4);
 }
 
+.dark .header-calm {
+  background: rgba(10, 10, 10, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 /* Card adaptation for calming background */
 .card-calm {
   backdrop-filter: blur(8px);
@@ -186,9 +214,49 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
+.dark .card-calm {
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
 /* Stat card subtle glow */
 .stat-card-calm {
   backdrop-filter: blur(8px);
   background: rgba(255, 255, 255, 0.55);
   border: 1px solid rgba(209, 213, 219, 0.25);
+}
+
+/* ─── Global dark mode text fixes ───────────────────────────── */
+.dark .text-stone-800 {
+  color: oklch(0.9 0 0) !important;
+}
+
+.dark .text-stone-700 {
+  color: oklch(0.8 0 0) !important;
+}
+
+.dark .text-stone-300 {
+  color: oklch(0.5 0 0) !important;
+}
+
+.dark .text-stone-500 {
+  color: oklch(0.65 0 0) !important;
+}
+
+.dark .bg-stone-100 {
+  background-color: oklch(0.25 0 0) !important;
+}
+
+.dark .bg-stone-400 {
+  color: oklch(0.55 0 0) !important;
+}
+
+/* Dark mode for the emerald top-rated card */
+.dark .border-emerald-200 {
+  border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+.dark .bg-emerald-50\/50 {
+  background-color: rgba(16, 185, 129, 0.08) !important;
 }
