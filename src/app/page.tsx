@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,27 +34,44 @@ import { useCopingStore } from "@/lib/store";
 // ─── Dark Mode Hook ──────────────────────────────────────────────────
 function useDarkMode() {
   const [dark, setDark] = useState(false);
-  useState(() => {
-    if (typeof window === "undefined") return;
-    const saved = localStorage.getItem("calm-router-dark");
-    if (saved === "true") {
-      setDark(true);
-      document.documentElement.classList.add("dark");
-    } else if (saved === null && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setDark(true);
-      document.documentElement.classList.add("dark");
+
+  // Read the saved preference (falling back to the system preference) once, after
+  // mount, and apply the class in the same step so the React state and the DOM
+  // class can never disagree.
+  //
+  // This used to read the preference inside a useState() initialiser. That form is
+  // meant to be a pure calculation, but the initialiser also called setDark() and
+  // touched the DOM, which left the class and the state out of step on first load.
+  // The visible result: the first click on the toggle looked like a no-op, and you
+  // needed a second one to actually switch.
+  useEffect(() => {
+    let saved: string | null = null;
+    try {
+      saved = localStorage.getItem("calm-router-dark");
+    } catch {
+      /* storage unavailable */
     }
-  });
+    const prefersDark =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initial = saved === null ? prefersDark : saved === "true";
+    setDark(initial);
+    document.documentElement.classList.toggle("dark", initial);
+  }, []);
+
   const toggle = useCallback(() => {
     setDark((prev) => {
       const next = !prev;
-      if (typeof window !== "undefined") {
-        document.documentElement.classList.toggle("dark", next);
+      document.documentElement.classList.toggle("dark", next);
+      try {
         localStorage.setItem("calm-router-dark", String(next));
+      } catch {
+        /* storage unavailable */
       }
       return next;
     });
   }, []);
+
   return [dark, toggle] as const;
 }
 
