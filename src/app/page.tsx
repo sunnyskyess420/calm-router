@@ -10,10 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Zap,
-  Brain,
-  AlertTriangle,
-  Heart,
   Sun,
   Star,
   ArrowLeft,
@@ -67,60 +63,75 @@ type View = "checkin" | "recommendations" | "skill-detail" | "breathing" | "grou
 type TierId = "EMERGENCY_RESET" | "QUICK_STARTERS" | "MAIN_REGULATION" | "COMFORT_PICKS" | "DAILY_MAINTENANCE";
 
 // ─── Constants — 5 tiers from the Coping Skills Menu ──────────────────────
+/* ------------------------------------------------------------------ */
+/*  Intensity mark — five bars, filled up to this tier's activation.   */
+/*  Replaces the stock hazard / bolt / brain / heart / sun glyphs so    */
+/*  the ladder reads as one system, the way the ClearStep hub does it.  */
+/* ------------------------------------------------------------------ */
+function TierBars({ n, big = false }: { n: number; big?: boolean }) {
+  return (
+    <span className={`tier-bars${big ? " lg" : ""}`} aria-hidden="true">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <i key={i} className={i <= n ? "on" : undefined} />
+      ))}
+    </span>
+  );
+}
+
 const TIER_ENTRIES: { id: TierId; label: string; icon: React.ReactNode; color: string; darkColor: string; desc: string; guide: string }[] = [
   {
     id: "EMERGENCY_RESET",
     label: "Emergency Reset",
-    icon: <AlertTriangle className="w-6 h-6" />,
-    color: "bg-red-50 border-red-300 hover:bg-red-100 text-red-800",
-    darkColor: "bg-red-950/40 border-red-800/50 hover:bg-red-900/40 text-red-300",
+    icon: <TierBars n={5} big />,
+    color: "bg-tier5-50 border-tier5-300 hover:bg-tier5-100 text-tier5-800",
+    darkColor: "bg-tier5-950/40 border-tier5-800/50 hover:bg-tier5-900/40 text-tier5-300",
     desc: "I'm in crisis, panicking, or completely overwhelmed",
     guide: "Use when you're in acute distress. These skills activate your body's calming reflexes fast.",
   },
   {
     id: "QUICK_STARTERS",
     label: "Quick Starters",
-    icon: <Zap className="w-6 h-6" />,
-    color: "bg-amber-50 border-amber-300 hover:bg-amber-100 text-amber-800",
-    darkColor: "bg-amber-950/40 border-amber-800/50 hover:bg-amber-900/40 text-amber-300",
+    icon: <TierBars n={4} big />,
+    color: "bg-tier4-50 border-tier4-300 hover:bg-tier4-100 text-tier4-800",
+    darkColor: "bg-tier4-950/40 border-tier4-800/50 hover:bg-tier4-900/40 text-tier4-300",
     desc: "I need fast relief right now",
     guide: "Low-effort tools you can do anywhere. Perfect when you need something quick but aren't in crisis.",
   },
   {
     id: "MAIN_REGULATION",
     label: "Main Regulation",
-    icon: <Brain className="w-6 h-6" />,
-    color: "bg-violet-50 border-violet-300 hover:bg-violet-100 text-violet-800",
-    darkColor: "bg-violet-950/40 border-violet-800/50 hover:bg-violet-900/40 text-violet-300",
+    icon: <TierBars n={3} big />,
+    color: "bg-tier3-50 border-tier3-300 hover:bg-tier3-100 text-tier3-800",
+    darkColor: "bg-tier3-950/40 border-tier3-800/50 hover:bg-tier3-900/40 text-tier3-300",
     desc: "I have energy to work through what's bothering me",
     guide: "Deeper coping tools for when you can engage. These take 10-20 minutes but have lasting effects.",
   },
   {
     id: "COMFORT_PICKS",
     label: "Comfort Picks",
-    icon: <Heart className="w-6 h-6" />,
-    color: "bg-pink-50 border-pink-300 hover:bg-pink-100 text-pink-800",
-    darkColor: "bg-pink-950/40 border-pink-800/50 hover:bg-pink-900/40 text-pink-300",
+    icon: <TierBars n={2} big />,
+    color: "bg-tier2-50 border-tier2-300 hover:bg-tier2-100 text-tier2-800",
+    darkColor: "bg-tier2-950/40 border-tier2-800/50 hover:bg-tier2-900/40 text-tier2-300",
     desc: "I'm tired and need something soothing",
     guide: "Gentle, nurturing activities for when you're emotionally drained. Focus on comfort and self-compassion.",
   },
   {
     id: "DAILY_MAINTENANCE",
     label: "Daily Maintenance",
-    icon: <Sun className="w-6 h-6" />,
-    color: "bg-emerald-50 border-emerald-300 hover:bg-emerald-100 text-emerald-800",
-    darkColor: "bg-emerald-950/40 border-emerald-800/50 hover:bg-emerald-900/40 text-emerald-300",
+    icon: <TierBars n={1} big />,
+    color: "bg-tier1-50 border-tier1-300 hover:bg-tier1-100 text-tier1-800",
+    darkColor: "bg-tier1-950/40 border-tier1-800/50 hover:bg-tier1-900/40 text-tier1-300",
     desc: "I'm doing okay and want to stay that way",
     guide: "Prevention and wellness habits. Build resilience over time by practicing these consistently.",
   },
 ];
 
 const TIER_CONFIG: Record<string, { label: string; icon: React.ReactNode; color: string; darkColor: string; bgColor: string; darkBgColor: string }> = {
-  EMERGENCY_RESET: { label: "Emergency Reset", icon: <AlertTriangle className="w-4 h-4" />, color: "text-red-600", darkColor: "text-red-400", bgColor: "bg-red-50", darkBgColor: "bg-red-950/60" },
-  QUICK_STARTERS: { label: "Quick Starters", icon: <Zap className="w-4 h-4" />, color: "text-amber-600", darkColor: "text-amber-400", bgColor: "bg-amber-50", darkBgColor: "bg-amber-950/60" },
-  MAIN_REGULATION: { label: "Main Regulation", icon: <Brain className="w-4 h-4" />, color: "text-violet-600", darkColor: "text-violet-400", bgColor: "bg-violet-50", darkBgColor: "bg-violet-950/60" },
-  COMFORT_PICKS: { label: "Comfort Picks", icon: <Heart className="w-4 h-4" />, color: "text-pink-600", darkColor: "text-pink-400", bgColor: "bg-pink-50", darkBgColor: "bg-pink-950/60" },
-  DAILY_MAINTENANCE: { label: "Daily Maintenance", icon: <Sun className="w-4 h-4" />, color: "text-emerald-600", darkColor: "text-emerald-400", bgColor: "bg-emerald-50", darkBgColor: "bg-emerald-950/60" },
+  EMERGENCY_RESET: { label: "Emergency Reset", icon: <TierBars n={5} />, color: "text-tier5-600", darkColor: "text-tier5-400", bgColor: "bg-tier5-50", darkBgColor: "bg-tier5-950/60" },
+  QUICK_STARTERS: { label: "Quick Starters", icon: <TierBars n={4} />, color: "text-tier4-600", darkColor: "text-tier4-400", bgColor: "bg-tier4-50", darkBgColor: "bg-tier4-950/60" },
+  MAIN_REGULATION: { label: "Main Regulation", icon: <TierBars n={3} />, color: "text-tier3-600", darkColor: "text-tier3-400", bgColor: "bg-tier3-50", darkBgColor: "bg-tier3-950/60" },
+  COMFORT_PICKS: { label: "Comfort Picks", icon: <TierBars n={2} />, color: "text-tier2-600", darkColor: "text-tier2-400", bgColor: "bg-tier2-50", darkBgColor: "bg-tier2-950/60" },
+  DAILY_MAINTENANCE: { label: "Daily Maintenance", icon: <TierBars n={1} />, color: "text-tier1-600", darkColor: "text-tier1-400", bgColor: "bg-tier1-50", darkBgColor: "bg-tier1-950/60" },
 };
 
 // ─── Breathing Exercise ────────────────────────────────────────────────────
@@ -181,10 +192,10 @@ function BreathingExercise({ onComplete }: { onComplete: () => void }) {
         }}
       >
         <div className="text-center">
-          <motion.p key={phase} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-2xl font-semibold text-emerald-700">
+          <motion.p key={phase} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-2xl font-semibold text-tier1-700">
             {phaseLabel}
           </motion.p>
-          <p className="text-5xl font-bold text-emerald-600 mt-2">{count}</p>
+          <p className="text-5xl font-bold text-tier1-600 mt-2">{count}</p>
         </div>
       </motion.div>
 
@@ -243,14 +254,14 @@ function GroundingExercise({ onComplete }: { onComplete: () => void }) {
           <div className="space-y-3 mb-6">
             {items.map((item, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3 bg-muted/50 rounded-lg px-4 py-3">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-tier1-500 shrink-0" />
                 <span className="text-sm">{item}</span>
               </motion.div>
             ))}
             {items.length < currentStep.count && (
               <input
                 autoFocus
-                className="w-full bg-background border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                className="w-full bg-background border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-tier1-500/30 focus:border-tier1-500"
                 placeholder={`Name something... (${items.length + 1}/${currentStep.count})`}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && (e.target as HTMLInputElement).value.trim()) {
@@ -602,16 +613,16 @@ export default function CopingApp() {
       <header className="sticky top-0 z-50 header-calm">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-emerald-600" />
+            <div className="w-8 h-8 rounded-full bg-tier1-100 flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-tier1-600" />
             </div>
-            <h1 className="font-semibold text-stone-800">Calm Router</h1>
+            <h1 className="font-semibold text-paper-800">Calm Router</h1>
           </div>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={toggleDark} className="text-stone-500 dark:text-stone-400" title={isDark ? "Switch to light mode" : "Switch to dark mode"}>
+            <Button variant="ghost" size="icon" onClick={toggleDark} className="text-paper-500 dark:text-paper-400" title={isDark ? "Switch to light mode" : "Switch to dark mode"}>
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => setView("insights")} className="text-stone-500 dark:text-stone-400">
+            <Button variant="ghost" size="sm" onClick={() => setView("insights")} className="text-paper-500 dark:text-paper-400">
               <History className="w-4 h-4" />
             </Button>
           </div>
@@ -625,7 +636,7 @@ export default function CopingApp() {
             <motion.div key="checkin" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-6">
               {/* Quick Guide Header */}
               <div className="text-center pt-6 pb-2">
-                <h2 className="text-2xl font-bold text-stone-800 mb-2">Coping Skills Menu</h2>
+                <h2 className="text-2xl font-bold text-paper-800 mb-2">Coping Skills Menu</h2>
                 <p className="text-muted-foreground text-sm max-w-md mx-auto">
                   Pick the level that matches how you&apos;re feeling right now. Each tier has 5 skills to choose from.
                 </p>
@@ -634,8 +645,8 @@ export default function CopingApp() {
               {/* How to Use Guide */}
               <Card className="card-calm">
                 <CardContent className="p-4">
-                  <h3 className="text-sm font-bold text-stone-700 flex items-center gap-2 mb-2">
-                    <Sparkles className="w-4 h-4 text-emerald-500" /> How to Use This Menu
+                  <h3 className="text-sm font-bold text-paper-700 flex items-center gap-2 mb-2">
+                    <Sparkles className="w-4 h-4 text-tier1-500" /> How to Use This Menu
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     Start at the tier that matches your current energy and distress level. In a crisis? Go to <strong>Emergency Reset</strong>. Need something fast? Try <strong>Quick Starters</strong>. Have energy to engage? Use <strong>Main Regulation</strong>. Feeling drained? Pick <strong>Comfort Picks</strong>. Doing okay? Practice <strong>Daily Maintenance</strong>. You can always move between tiers.
@@ -668,7 +679,7 @@ export default function CopingApp() {
               </div>
 
               <div className="text-center pt-2">
-                <Button variant="outline" onClick={() => setView("insights")} className="text-stone-500">
+                <Button variant="outline" onClick={() => setView("insights")} className="text-paper-500">
                   <TrendingUp className="w-4 h-4 mr-2" /> View My Insights
                 </Button>
               </div>
@@ -693,18 +704,18 @@ export default function CopingApp() {
               </div>
 
               {topSkillsForTier && (
-                <Card className="border-emerald-200 bg-emerald-50/50">
+                <Card className="border-tier1-200 bg-tier1-50/50">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-sm flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-emerald-600" /> Your top-rated in this tier
+                      <TrendingUp className="w-4 h-4 text-tier1-600" /> Your top-rated in this tier
                     </CardTitle>
                     <CardDescription className="text-xs">Based on your past ratings in {TIER_CONFIG[currentTier].label}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
                       {topSkillsForTier.map((s, i) => (
-                        <Badge key={s.id} variant="secondary" className="text-xs bg-emerald-100 text-emerald-800">
-                          {i + 1}. {s.name} <Star className="w-3 h-3 ml-1 fill-amber-400 text-amber-400" /> {s.avgRating}
+                        <Badge key={s.id} variant="secondary" className="text-xs bg-tier1-100 text-tier1-800">
+                          {i + 1}. {s.name} <Star className="w-3 h-3 ml-1 fill-tier4-400 text-tier4-400" /> {s.avgRating}
                         </Badge>
                       ))}
                     </div>
@@ -731,7 +742,7 @@ export default function CopingApp() {
                             {si + 1}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-sm text-stone-800">{skill.name}</p>
+                            <p className="font-semibold text-sm text-paper-800">{skill.name}</p>
                             <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{skill.description}</p>
                             <div className="flex items-center gap-3 mt-2">
                               <div className="flex items-center gap-1">
@@ -771,7 +782,7 @@ export default function CopingApp() {
                 </Button>
                 <div className="flex-1">
                   <p className="text-sm text-muted-foreground">{TIER_CONFIG[selectedSkill.tier]?.label}</p>
-                  <h2 className="text-xl font-bold text-stone-800">{selectedSkill.name}</h2>
+                  <h2 className="text-xl font-bold text-paper-800">{selectedSkill.name}</h2>
                 </div>
                 <Badge variant="outline" className="text-xs"><Clock className="w-3 h-3 mr-1" /> {selectedSkill.duration}</Badge>
               </div>
@@ -783,8 +794,8 @@ export default function CopingApp() {
                   <div className="space-y-3">
                     {selectedSkill.instructions.split("\n").map((step, i) => (
                       <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} className="flex gap-3 items-start">
-                        <span className="w-6 h-6 rounded-full bg-stone-100 flex items-center justify-center text-xs font-semibold text-stone-500 shrink-0 mt-0.5">{i + 1}</span>
-                        <p className="text-sm text-stone-700 leading-relaxed">{step.replace(/^\d+\.\s*/, "")}</p>
+                        <span className="w-6 h-6 rounded-full bg-paper-100 flex items-center justify-center text-xs font-semibold text-paper-500 shrink-0 mt-0.5">{i + 1}</span>
+                        <p className="text-sm text-paper-700 leading-relaxed">{step.replace(/^\d+\.\s*/, "")}</p>
                       </motion.div>
                     ))}
                   </div>
@@ -803,7 +814,7 @@ export default function CopingApp() {
             <motion.div key="breathing" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
               <div className="flex items-center gap-3 mb-4">
                 <Button variant="ghost" size="icon" onClick={() => setView("recommendations")}><ArrowLeft className="w-4 h-4" /></Button>
-                <h2 className="text-lg font-bold text-stone-800">{selectedSkill?.name || "Breathing Exercise"}</h2>
+                <h2 className="text-lg font-bold text-paper-800">{selectedSkill?.name || "Breathing Exercise"}</h2>
               </div>
               <BreathingExercise onComplete={() => handleSkillComplete(0)} />
             </motion.div>
@@ -814,7 +825,7 @@ export default function CopingApp() {
             <motion.div key="grounding" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
               <div className="flex items-center gap-3 mb-4">
                 <Button variant="ghost" size="icon" onClick={() => setView("recommendations")}><ArrowLeft className="w-4 h-4" /></Button>
-                <h2 className="text-lg font-bold text-stone-800">{selectedSkill?.name || "Grounding Exercise"}</h2>
+                <h2 className="text-lg font-bold text-paper-800">{selectedSkill?.name || "Grounding Exercise"}</h2>
               </div>
               <GroundingExercise onComplete={() => handleSkillComplete(0)} />
             </motion.div>
@@ -825,14 +836,14 @@ export default function CopingApp() {
             <motion.div key="rating" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="flex flex-col items-center justify-center min-h-[60vh] gap-6">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-1">You used</p>
-                <h2 className="text-xl font-bold text-stone-800">{selectedSkill?.name}</h2>
+                <h2 className="text-xl font-bold text-paper-800">{selectedSkill?.name}</h2>
               </div>
               <div className="text-center space-y-4">
-                <p className="text-sm font-medium text-stone-600">{rating > 0 ? "How do you feel now?" : "How do you feel after this?"}</p>
+                <p className="text-sm font-medium text-paper-600">{rating > 0 ? "How do you feel now?" : "How do you feel after this?"}</p>
                 <div className="flex gap-2 justify-center">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <motion.button key={star} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }} onClick={() => handleSkillComplete(star)} className="focus:outline-none">
-                      <Star className={`w-10 h-10 transition-colors ${star <= (rating || 0) ? "fill-amber-400 text-amber-400" : "text-stone-300 hover:text-amber-300"}`} />
+                      <Star className={`w-10 h-10 transition-colors ${star <= (rating || 0) ? "fill-tier4-400 text-tier4-400" : "text-paper-300 hover:text-tier4-300"}`} />
                     </motion.button>
                   ))}
                 </div>
@@ -862,7 +873,7 @@ export default function CopingApp() {
               <div className="flex items-center gap-3">
                 <Button variant="ghost" size="icon" onClick={() => setView("checkin")}><ArrowLeft className="w-4 h-4" /></Button>
                 <div>
-                  <h2 className="text-xl font-bold text-stone-800">Your Insights</h2>
+                  <h2 className="text-xl font-bold text-paper-800">Your Insights</h2>
                   <p className="text-sm text-muted-foreground">What&apos;s working for you</p>
                 </div>
               </div>
@@ -870,8 +881,8 @@ export default function CopingApp() {
               {insights.totalSessions === 0 ? (
                 <Card className="card-calm">
                   <CardContent className="flex flex-col items-center py-16 text-center">
-                    <div className="w-16 h-16 rounded-full bg-stone-100 flex items-center justify-center mb-4"><BarChart3 className="w-8 h-8 text-stone-400" /></div>
-                    <h3 className="font-semibold text-stone-700 mb-2">No data yet</h3>
+                    <div className="w-16 h-16 rounded-full bg-paper-100 flex items-center justify-center mb-4"><BarChart3 className="w-8 h-8 text-paper-400" /></div>
+                    <h3 className="font-semibold text-paper-700 mb-2">No data yet</h3>
                     <p className="text-sm text-muted-foreground max-w-xs">Complete a few check-ins and rate your skills to see personalized insights here.</p>
                     <Button className="mt-6" onClick={() => setView("checkin")}>Start a check-in</Button>
                   </CardContent>
@@ -879,13 +890,13 @@ export default function CopingApp() {
               ) : (
                 <>
                   <div className="grid grid-cols-3 gap-3">
-                    <Card className="stat-card-calm"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-stone-800">{insights.totalSessions}</p><p className="text-xs text-muted-foreground">Sessions</p></CardContent></Card>
-                    <Card className="stat-card-calm"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-stone-800">{insights.topSkills.length}</p><p className="text-xs text-muted-foreground">Skills tried</p></CardContent></Card>
-                    <Card className="stat-card-calm"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-stone-800">{Object.keys(insights.tierCounts).length}</p><p className="text-xs text-muted-foreground">Tiers used</p></CardContent></Card>
+                    <Card className="stat-card-calm"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-paper-800">{insights.totalSessions}</p><p className="text-xs text-muted-foreground">Sessions</p></CardContent></Card>
+                    <Card className="stat-card-calm"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-paper-800">{insights.topSkills.length}</p><p className="text-xs text-muted-foreground">Skills tried</p></CardContent></Card>
+                    <Card className="stat-card-calm"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-paper-800">{Object.keys(insights.tierCounts).length}</p><p className="text-xs text-muted-foreground">Tiers used</p></CardContent></Card>
                   </div>
 
                   <Tabs defaultValue="top-skills" className="w-full">
-                    <TabsList className="w-full bg-stone-100">
+                    <TabsList className="w-full bg-paper-100">
                       <TabsTrigger value="top-skills" className="flex-1 text-xs">Top Skills</TabsTrigger>
                       <TabsTrigger value="tier-map" className="flex-1 text-xs">Tier Map</TabsTrigger>
                       <TabsTrigger value="history" className="flex-1 text-xs">History</TabsTrigger>
@@ -899,15 +910,15 @@ export default function CopingApp() {
                           <motion.div key={skill.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                             <Card className="card-calm">
                               <CardContent className="flex items-center gap-3 p-3">
-                                <span className="text-lg font-bold text-stone-300 w-6">#{i + 1}</span>
+                                <span className="text-lg font-bold text-paper-300 w-6">#{i + 1}</span>
                                 <div className={`w-8 h-8 rounded-lg ${tier.bgColor} dark:${tier.darkBgColor} flex items-center justify-center shrink-0`}>{tier.icon}</div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium text-stone-800 truncate">{skill.name}</p>
+                                  <p className="text-sm font-medium text-paper-800 truncate">{skill.name}</p>
                                   <p className="text-xs text-muted-foreground">Used {skill.timesUsed}x</p>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                                  <span className="text-sm font-semibold text-stone-700">{skill.avgRating}</span>
+                                  <Star className="w-3 h-3 fill-tier4-400 text-tier4-400" />
+                                  <span className="text-sm font-semibold text-paper-700">{skill.avgRating}</span>
                                 </div>
                               </CardContent>
                             </Card>
@@ -923,15 +934,15 @@ export default function CopingApp() {
                         return (
                           <Card key={tier} className="card-calm">
                             <CardContent className="flex items-center gap-3 p-3">
-                              <div className={`w-8 h-8 rounded-lg ${tierConf?.bgColor || "bg-stone-50"} dark:${tierConf?.darkBgColor || "dark:bg-stone-800"} flex items-center justify-center shrink-0`}>
+                              <div className={`w-8 h-8 rounded-lg ${tierConf?.bgColor || "bg-paper-50"} dark:${tierConf?.darkBgColor || "dark:bg-paper-800"} flex items-center justify-center shrink-0`}>
                                 {tierConf?.icon || <Sparkles className="w-4 h-4" />}
                               </div>
                               <div className="flex-1">
                                 <p className="text-xs text-muted-foreground">{tierConf?.label || tier}</p>
-                                <p className="text-sm font-medium text-stone-800">{data.name}</p>
+                                <p className="text-sm font-medium text-paper-800">{data.name}</p>
                               </div>
-                              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50">
-                                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-tier4-50">
+                                <Star className="w-3 h-3 fill-tier4-400 text-tier4-400" />
                                 <span className="text-xs font-semibold">{data.avgRating}</span>
                               </div>
                             </CardContent>
@@ -948,7 +959,7 @@ export default function CopingApp() {
                             <CardContent className="p-3">
                               <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-2">
-                                  <div className={`w-6 h-6 rounded ${TIER_CONFIG[session.mood]?.bgColor || "bg-stone-100"} dark:${TIER_CONFIG[session.mood]?.darkBgColor || "dark:bg-stone-800"} flex items-center justify-center`}>
+                                  <div className={`w-6 h-6 rounded ${TIER_CONFIG[session.mood]?.bgColor || "bg-paper-100"} dark:${TIER_CONFIG[session.mood]?.darkBgColor || "dark:bg-paper-800"} flex items-center justify-center`}>
                                     <span className="text-xs">{(TIER_CONFIG[session.mood]?.icon) || <Sparkles className="w-3 h-3" />}</span>
                                   </div>
                                   <span className="text-sm font-medium">{TIER_CONFIG[session.mood]?.label || session.mood}</span>
@@ -959,7 +970,7 @@ export default function CopingApp() {
                                 {session.skills.map((s, i) => (
                                   <Badge key={i} variant="outline" className="text-[10px]">
                                     {s.name}
-                                    {s.rating && <Star className="w-2 h-2 ml-1 fill-amber-400 text-amber-400" />}
+                                    {s.rating && <Star className="w-2 h-2 ml-1 fill-tier4-400 text-tier4-400" />}
                                   </Badge>
                                 ))}
                               </div>
@@ -981,7 +992,7 @@ export default function CopingApp() {
                 <Card className="card-calm mt-6">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-sm flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-stone-500" /> Data Management
+                      <FileText className="w-4 h-4 text-paper-500" /> Data Management
                     </CardTitle>
                     <CardDescription className="text-xs">Save, print, or clear your coping data</CardDescription>
                   </CardHeader>
@@ -993,7 +1004,7 @@ export default function CopingApp() {
                       <Button variant="outline" size="sm" onClick={handlePrintReport} className="gap-2">
                         <Printer className="w-4 h-4" /> Print for Therapist
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => setView("confirm-clear")} className="gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200">
+                      <Button variant="outline" size="sm" onClick={() => setView("confirm-clear")} className="gap-2 text-tier5-600 hover:text-tier5-700 hover:bg-tier5-50 border-tier5-200">
                         <Trash2 className="w-4 h-4" /> Clear All Data
                       </Button>
                     </div>
@@ -1011,11 +1022,11 @@ export default function CopingApp() {
           {/* ─── Confirm Clear Data View ──────────────────── */}
           {view === "confirm-clear" && (
             <motion.div key="confirm-clear" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="flex flex-col items-center justify-center min-h-[60vh] gap-6 px-4">
-              <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center">
-                <AlertCircle className="w-8 h-8 text-red-500" />
+              <div className="w-16 h-16 rounded-full bg-tier5-50 flex items-center justify-center">
+                <AlertCircle className="w-8 h-8 text-tier5-500" />
               </div>
               <div className="text-center space-y-2 max-w-sm">
-                <h2 className="text-xl font-bold text-stone-800">Clear all data?</h2>
+                <h2 className="text-xl font-bold text-paper-800">Clear all data?</h2>
                 <p className="text-sm text-muted-foreground">
                   This will permanently delete all your sessions, ratings, and insights.
                   This cannot be undone.
@@ -1046,7 +1057,7 @@ export default function CopingApp() {
       </main>
 
       <footer className="mt-auto py-4 text-center relative z-10">
-        <p className="text-xs text-stone-400">Based on the Coping Skills Menu — 25 skills across 5 tiers</p>
+        <p className="text-xs text-paper-400">Based on the Coping Skills Menu — 25 skills across 5 tiers</p>
       </footer>
     </div>
   );

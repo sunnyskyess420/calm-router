@@ -3,11 +3,26 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ==========================================================================
+   Calm Router — warm paper system, matched to the ClearStep hub.
+
+   Graphics changes:
+   - the old rainbow gradient (green > teal > violet > fuchsia > orange > yellow)
+     plus five coloured glow orbs is gone. Background is now warm paper with
+     three soft colour washes and a fine grain, the same recipe as the hub.
+   - the five tiers used to be five different hues (red / amber / violet /
+     pink / emerald). They are now ONE warm ramp at five intensities, which is
+     how the hub draws them (see .sig-tiers there). Everything warm-ish and
+     calm instead of a rainbow, and intensity still reads at a glance.
+   - type is Instrument Serif (display) + Hanken Grotesk (UI), the hub pairing.
+   ========================================================================== */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-hanken);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-serif-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -41,75 +56,124 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* One warm ramp, five intensities: tier1 gentlest -> tier5 most activated. */
+  /* tier1 — Daily Maintenance (gentlest) */
+  --color-tier1-50: oklch(0.98 0.025 72); --color-tier1-100: oklch(0.962 0.032 72);
+  --color-tier1-200: oklch(0.925 0.043 72); --color-tier1-300: oklch(0.878 0.055 72);
+  --color-tier1-400: oklch(0.82 0.064 72); --color-tier1-500: oklch(0.762 0.07 72);
+  --color-tier1-600: oklch(0.7 0.07 72); --color-tier1-700: oklch(0.628 0.067 72);
+  --color-tier1-800: oklch(0.556 0.062 72); --color-tier1-900: oklch(0.462 0.052 72);
+  --color-tier1-950: oklch(0.352 0.039 72);
+  /* tier2 — Comfort Picks */
+  --color-tier2-50: oklch(0.979 0.032 68); --color-tier2-100: oklch(0.959 0.041 68);
+  --color-tier2-200: oklch(0.92 0.057 68); --color-tier2-300: oklch(0.87 0.072 68);
+  --color-tier2-400: oklch(0.809 0.085 68); --color-tier2-500: oklch(0.748 0.092 68);
+  --color-tier2-600: oklch(0.684 0.092 68); --color-tier2-700: oklch(0.61 0.088 68);
+  --color-tier2-800: oklch(0.537 0.081 68); --color-tier2-900: oklch(0.442 0.068 68);
+  --color-tier2-950: oklch(0.332 0.052 68);
+  /* tier3 — Main Regulation */
+  --color-tier3-50: oklch(0.977 0.045 62); --color-tier3-100: oklch(0.956 0.059 62);
+  --color-tier3-200: oklch(0.914 0.081 62); --color-tier3-300: oklch(0.862 0.101 62);
+  --color-tier3-400: oklch(0.798 0.12 62); --color-tier3-500: oklch(0.735 0.13 62);
+  --color-tier3-600: oklch(0.667 0.13 62); --color-tier3-700: oklch(0.592 0.125 62);
+  --color-tier3-800: oklch(0.517 0.114 62); --color-tier3-900: oklch(0.421 0.096 62);
+  --color-tier3-950: oklch(0.313 0.073 62);
+  /* tier4 — Quick Starters */
+  --color-tier4-50: oklch(0.976 0.049 52); --color-tier4-100: oklch(0.953 0.063 52);
+  --color-tier4-200: oklch(0.909 0.087 52); --color-tier4-300: oklch(0.854 0.109 52);
+  --color-tier4-400: oklch(0.787 0.129 52); --color-tier4-500: oklch(0.721 0.14 52);
+  --color-tier4-600: oklch(0.651 0.14 52); --color-tier4-700: oklch(0.574 0.134 52);
+  --color-tier4-800: oklch(0.498 0.123 52); --color-tier4-900: oklch(0.401 0.104 52);
+  --color-tier4-950: oklch(0.293 0.078 52);
+  /* tier5 — Emergency Reset (most activated) */
+  --color-tier5-50: oklch(0.974 0.052 40); --color-tier5-100: oklch(0.95 0.068 40);
+  --color-tier5-200: oklch(0.903 0.093 40); --color-tier5-300: oklch(0.846 0.117 40);
+  --color-tier5-400: oklch(0.776 0.138 40); --color-tier5-500: oklch(0.707 0.15 40);
+  --color-tier5-600: oklch(0.635 0.15 40); --color-tier5-700: oklch(0.556 0.144 40);
+  --color-tier5-800: oklch(0.478 0.132 40); --color-tier5-900: oklch(0.38 0.111 40);
+  --color-tier5-950: oklch(0.274 0.084 40);
+  /* Warm paper neutrals, replacing the old pure-grey stone scale. */
+  --color-paper-50: oklch(0.977 0.008 84); --color-paper-100: oklch(0.956 0.012 84);
+  --color-paper-200: oklch(0.918 0.013 83); --color-paper-300: oklch(0.870 0.014 82);
+  --color-paper-400: oklch(0.760 0.014 80); --color-paper-500: oklch(0.640 0.013 78);
+  --color-paper-600: oklch(0.548 0.013 78); --color-paper-700: oklch(0.440 0.014 76);
+  --color-paper-800: oklch(0.330 0.014 74); --color-paper-900: oklch(0.250 0.014 74);
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.75rem;
+
+  /* warm paper surfaces */
+  --background: oklch(0.974 0.012 84);
+  --foreground: oklch(0.255 0.022 56);
+  --card: oklch(0.996 0.006 84);
+  --card-foreground: oklch(0.255 0.022 56);
+  --popover: oklch(0.996 0.006 84);
+  --popover-foreground: oklch(0.255 0.022 56);
+  --primary: oklch(0.545 0.115 30);
+  --primary-foreground: oklch(0.985 0.010 84);
+  --secondary: oklch(0.956 0.016 84);
+  --secondary-foreground: oklch(0.340 0.020 60);
+  --muted: oklch(0.956 0.016 84);
+  --muted-foreground: oklch(0.575 0.018 62);
+  --accent: oklch(0.956 0.016 84);
+  --accent-foreground: oklch(0.340 0.020 60);
+  --destructive: oklch(0.577 0.160 28);
+  --border: oklch(0.884 0.014 80);
+  --input: oklch(0.884 0.014 80);
+  --ring: oklch(0.545 0.115 30);
+  --chart-1: oklch(0.700 0.130 62);
+  --chart-2: oklch(0.640 0.130 52);
+  --chart-3: oklch(0.575 0.090 188);
+  --chart-4: oklch(0.620 0.115 8);
+  --chart-5: oklch(0.575 0.085 148);
+  --sidebar: oklch(0.977 0.008 84);
+  --sidebar-foreground: oklch(0.255 0.022 56);
+  --sidebar-primary: oklch(0.545 0.115 30);
+  --sidebar-primary-foreground: oklch(0.985 0.010 84);
+  --sidebar-accent: oklch(0.956 0.016 84);
+  --sidebar-accent-foreground: oklch(0.340 0.020 60);
+  --sidebar-border: oklch(0.884 0.014 80);
+  --sidebar-ring: oklch(0.545 0.115 30);
+
+  --paper-bg: oklch(0.974 0.012 84);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: oklch(0.190 0.014 74);
+  --foreground: oklch(0.940 0.012 84);
+  --card: oklch(0.240 0.016 74);
+  --card-foreground: oklch(0.940 0.012 84);
+  --popover: oklch(0.240 0.016 74);
+  --popover-foreground: oklch(0.940 0.012 84);
+  --primary: oklch(0.720 0.115 32);
+  --primary-foreground: oklch(0.190 0.014 74);
+  --secondary: oklch(0.262 0.016 74);
+  --secondary-foreground: oklch(0.940 0.012 84);
+  --muted: oklch(0.262 0.016 74);
+  --muted-foreground: oklch(0.775 0.014 82);
+  --accent: oklch(0.262 0.016 74);
+  --accent-foreground: oklch(0.940 0.012 84);
+  --destructive: oklch(0.660 0.170 26);
+  --border: oklch(0.336 0.016 76);
+  --input: oklch(0.300 0.016 76);
+  --ring: oklch(0.720 0.115 32);
+  --chart-1: oklch(0.745 0.125 64);
+  --chart-2: oklch(0.700 0.125 54);
+  --chart-3: oklch(0.700 0.090 186);
+  --chart-4: oklch(0.740 0.110 10);
+  --chart-5: oklch(0.720 0.085 150);
+  --sidebar: oklch(0.240 0.016 74);
+  --sidebar-foreground: oklch(0.940 0.012 84);
+  --sidebar-primary: oklch(0.720 0.115 32);
+  --sidebar-primary-foreground: oklch(0.190 0.014 74);
+  --sidebar-accent: oklch(0.262 0.016 74);
+  --sidebar-accent-foreground: oklch(0.940 0.012 84);
+  --sidebar-border: oklch(0.336 0.016 76);
+  --sidebar-ring: oklch(0.720 0.115 32);
+
+  --paper-bg: oklch(0.190 0.014 74);
 }
 
 @layer base {
@@ -121,33 +185,13 @@
   }
 }
 
-/* ─── Calming Background ─────────────────────────────────────── */
+/* ==========================================================================
+   Background — warm paper, soft washes, fine grain (was: rainbow gradient)
+   ========================================================================== */
 .calm-bg {
   position: relative;
-  background: linear-gradient(
-    160deg,
-    #f0fdf4 0%,
-    #ecfdf5 15%,
-    #f0fdfa 30%,
-    #f5f3ff 50%,
-    #fdf4ff 65%,
-    #fff7ed 80%,
-    #fefce8 100%
-  );
+  background: var(--paper-bg);
   min-height: 100vh;
-}
-
-.dark .calm-bg {
-  background: linear-gradient(
-    160deg,
-    #0c1a12 0%,
-    #0a1a14 15%,
-    #0a1a1a 30%,
-    #140e24 50%,
-    #1a0e1e 65%,
-    #1a1408 80%,
-    #1a1808 100%
-  );
 }
 
 .calm-bg::before {
@@ -156,23 +200,17 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.25;
-  background-image:
-    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(16, 185, 129, 0.15), transparent),
-    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(139, 92, 246, 0.1), transparent),
-    radial-gradient(ellipse 70% 55% at 50% 80%, rgba(59, 130, 246, 0.08), transparent),
-    radial-gradient(ellipse 50% 40% at 10% 70%, rgba(236, 72, 153, 0.06), transparent),
-    radial-gradient(ellipse 40% 35% at 90% 60%, rgba(245, 158, 11, 0.06), transparent);
+  background:
+    radial-gradient(760px 460px at 12% -8%, oklch(0.72 0.105 62 / 16%), transparent 70%),
+    radial-gradient(680px 440px at 96% 4%, oklch(0.68 0.070 84 / 14%), transparent 70%),
+    radial-gradient(900px 520px at 50% 108%, oklch(0.66 0.080 40 / 12%), transparent 72%);
 }
 
 .dark .calm-bg::before {
-  opacity: 0.3;
-  background-image:
-    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(16, 185, 129, 0.2), transparent),
-    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(139, 92, 246, 0.15), transparent),
-    radial-gradient(ellipse 70% 55% at 50% 80%, rgba(59, 130, 246, 0.12), transparent),
-    radial-gradient(ellipse 50% 40% at 10% 70%, rgba(236, 72, 153, 0.1), transparent),
-    radial-gradient(ellipse 40% 35% at 90% 60%, rgba(245, 158, 11, 0.08), transparent);
+  background:
+    radial-gradient(760px 460px at 12% -8%, oklch(0.72 0.105 62 / 10%), transparent 70%),
+    radial-gradient(680px 440px at 96% 4%, oklch(0.68 0.070 84 / 8%), transparent 70%),
+    radial-gradient(900px 520px at 50% 108%, oklch(0.66 0.080 40 / 8%), transparent 72%);
 }
 
 .calm-bg::after {
@@ -181,82 +219,117 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.03;
-  background-size: 60px 60px;
-  background-image:
-    radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.5) 1px, transparent 1px),
-    radial-gradient(circle at 70% 70%, rgba(139, 92, 246, 0.3) 0.5px, transparent 0.5px);
+  opacity: 0.20;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Ensure content sits above background layers */
+.dark .calm-bg::after {
+  opacity: 0.10;
+  mix-blend-mode: screen;
+}
+
 .calm-bg > * {
   position: relative;
   z-index: 1;
 }
 
-/* Header adaptation for calming background */
+/* ==========================================================================
+   Surfaces
+   ========================================================================== */
 .header-calm {
-  backdrop-filter: blur(16px);
-  background: rgba(255, 255, 255, 0.65);
-  border-bottom: 1px solid rgba(209, 213, 219, 0.4);
+  backdrop-filter: blur(16px) saturate(1.15);
+  background: oklch(0.974 0.012 84 / 78%);
+  border-bottom: 1px solid oklch(0.884 0.014 80 / 70%);
 }
 
 .dark .header-calm {
-  background: rgba(10, 10, 10, 0.7);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: oklch(0.190 0.014 74 / 82%);
+  border-bottom: 1px solid oklch(0.336 0.016 76 / 70%);
 }
 
-/* Card adaptation for calming background */
 .card-calm {
   backdrop-filter: blur(8px);
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(209, 213, 219, 0.35);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+  background: oklch(0.996 0.006 84 / 78%);
+  border: 1px solid oklch(0.884 0.014 80 / 65%);
+  box-shadow: 0 1px 2px oklch(0.30 0.03 60 / 5%), 0 1px 1px oklch(0.30 0.03 60 / 4%);
 }
 
 .dark .card-calm {
-  background: rgba(30, 30, 30, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  background: oklch(0.240 0.016 74 / 72%);
+  border: 1px solid oklch(0.336 0.016 76 / 70%);
+  box-shadow: 0 1px 2px oklch(0 0 0 / 30%);
 }
 
-/* Stat card subtle glow */
 .stat-card-calm {
   backdrop-filter: blur(8px);
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(209, 213, 219, 0.25);
+  background: oklch(0.996 0.006 84 / 62%);
+  border: 1px solid oklch(0.884 0.014 80 / 55%);
 }
 
-/* ─── Global dark mode text fixes ───────────────────────────── */
-.dark .text-stone-800 {
-  color: oklch(0.9 0 0) !important;
+.dark .stat-card-calm {
+  background: oklch(0.240 0.016 74 / 55%);
+  border: 1px solid oklch(0.336 0.016 76 / 55%);
 }
 
-.dark .text-stone-700 {
-  color: oklch(0.8 0 0) !important;
+/* ==========================================================================
+   Display type — the hub's serif, applied to all headings
+   ========================================================================== */
+h1, h2, h3 {
+  font-family: var(--font-serif-display, "Instrument Serif"), "Iowan Old Style", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
-.dark .text-stone-300 {
-  color: oklch(0.5 0 0) !important;
+/* ==========================================================================
+   Intensity marks — a five-step staircase, the calm-router counterpart to the
+   hub's .sig-tiers. Filled bars = how activated this tier is.
+   Used in the tier chooser and the tier badges.
+   ========================================================================== */
+.tier-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 15px;
 }
 
-.dark .text-stone-500 {
-  color: oklch(0.65 0 0) !important;
+.tier-bars i {
+  width: 3px;
+  border-radius: 99px;
+  background: currentColor;
+  opacity: 0.16;
 }
 
-.dark .bg-stone-100 {
-  background-color: oklch(0.25 0 0) !important;
-}
+.tier-bars i:nth-child(1) { height: 4px; }
+.tier-bars i:nth-child(2) { height: 6px; }
+.tier-bars i:nth-child(3) { height: 9px; }
+.tier-bars i:nth-child(4) { height: 12px; }
+.tier-bars i:nth-child(5) { height: 15px; }
+.tier-bars i.on { opacity: 1; }
 
-.dark .bg-stone-400 {
-  color: oklch(0.55 0 0) !important;
-}
+.tier-bars.lg { gap: 5px; height: 30px; }
+.tier-bars.lg i { width: 6px; }
+.tier-bars.lg i:nth-child(1) { height: 8px; }
+.tier-bars.lg i:nth-child(2) { height: 13px; }
+.tier-bars.lg i:nth-child(3) { height: 18px; }
+.tier-bars.lg i:nth-child(4) { height: 24px; }
+.tier-bars.lg i:nth-child(5) { height: 30px; }
 
-/* Dark mode for the emerald top-rated card */
-.dark .border-emerald-200 {
-  border-color: rgba(16, 185, 129, 0.2) !important;
-}
+/* ==========================================================================
+   Dark-mode text corrections (was: stone -> paper)
+   ========================================================================== */
+.dark .text-paper-800 { color: oklch(0.925 0.012 84) !important; }
+.dark .text-paper-700 { color: oklch(0.800 0.014 82) !important; }
+.dark .text-paper-600 { color: oklch(0.720 0.014 81) !important; }
+.dark .text-paper-500 { color: oklch(0.680 0.014 80) !important; }
+.dark .text-paper-300 { color: oklch(0.520 0.014 78) !important; }
+.dark .bg-paper-100   { background-color: oklch(0.280 0.014 76) !important; }
+.dark .bg-paper-50    { background-color: oklch(0.245 0.014 75) !important; }
 
-.dark .bg-emerald-50\/50 {
-  background-color: rgba(16, 185, 129, 0.08) !important;
+/* keep the top-rated accent card readable in dark mode */
+.dark .border-tier1-200 { border-color: oklch(0.720 0.085 150 / 22%) !important; }
+.dark .bg-tier1-50\/50 { background-color: oklch(0.720 0.085 150 / 10%) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
